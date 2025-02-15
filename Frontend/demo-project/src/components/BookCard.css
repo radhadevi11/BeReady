@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap');
+
+body {
+  background-color: #1a1a2e;
+  color: #eaeaea;
+  font-family: 'Karla', sans-serif;
+}
+
+
+.book-card__title{
+  color: black;
+}
+.book-card {
+  display: flex;
+  background-color: #16213e;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s;
+  width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  flex-direction: row;
+}
+
+.book-card:hover {
+  transform: scale(1.05);
+}
+
+.book-card__image {
+  width: 120px;
+  height: auto;
+  margin-right: 20px;
+}
+
+.book-card__details {
+  flex: 1;
+  text-align: left;
+}
+
+.book-card__label {
+  font-weight: bold;
+  color: #888;
+  margin-right: 5px;
+}
+
+.book-card__title {
+  font-size: 1.6em;
+  margin: 0.2em 0;
+  font-weight: bold;
+}
+
+.book-card__author {
+  color: black;
+  margin: 0.2em 0;
+  font-style: italic;
+}
+
+.book-card__description {
+  color: black;
+  margin: 0.2em 0;
+  font-size: 0.9em;
+}
+
+.book-card__notes {
+  list-style-type: none;
+  padding: 0;
+  margin: 0.5em 0;
+  font-size: 0.9em;
+}
+
+.book-card__notes li {
+  margin-bottom: 0.5em;
+}
+
+.book-card__notes strong {
+  color: #ff4c4c;
+}
+
+@media (max-width: 768px) {
+  .book-card {
+    max-width: 100%;
+    margin: 10px;
+  }
+
+  .book-card__title {
+    font-size: 1.3em;
+  }
+
+  .book-card__description,
+  .book-card__notes {
+    font-size: 0.9em;
+  }
+}
