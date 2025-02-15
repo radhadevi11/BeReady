@@ -1,5 +1,9 @@
+import React, { useState } from 'react';
 import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import './App.css';
+import BookListing from './components/BookListing';
+import BookCard from './components/BookCard';
+import NotesDashboard from './components/NotesDashboard';
 import Login from './components/Login';
 import RegistrationForm from './components/RegistrationForm';
 import AddBookForm from './components/AddBookForm';
@@ -18,8 +22,14 @@ function App() {
     return children;
   };
 
+  const [isNotesDashboardOpen, setNotesDashboardOpen] = useState(false);
+
+  const openNotesDashboard = () => setNotesDashboardOpen(true);
+  const closeNotesDashboard = () => setNotesDashboardOpen(false);
+
   return (
     <div className="App">
+      <NotesDashboard isOpen={isNotesDashboardOpen} onClose={closeNotesDashboard} />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegistrationForm />} />
@@ -50,10 +60,13 @@ function App() {
           path="/user-dashboard"
           element={
             <ProtectedRoute>
-              <div>User Dashboard</div>
+              <div>
+                <BookListing />
+              </div>
             </ProtectedRoute>
           }
         />
+        <Route path="/book/:title" element={<div>Book Detail Page (Placeholder)</div>} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </div>

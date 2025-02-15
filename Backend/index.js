@@ -6,14 +6,14 @@ const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const JWT_SECRET = 'your-secret-key'; // In production, use environment variable
+const { JWT_SECRET } = require('./secrets');
 const port = 3001; // Using 3001 since React typically uses 3000
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-const uri = "mongodb+srv://agovardhananpresidio:NDm0H6GTSqydzF8b@cluster0.jx10b.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const { DB_URI: uri } = require('./config');
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -193,6 +193,46 @@ app.post('/register', validateRegistration, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'An error occurred during registration'
+    });
+  }
+});
+
+app.get('/books', async (req, res) => {
+  try {
+    const db = client.db("BeReadyUsers");
+    const { page = 1, limit = 10 } = req.query;
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    const totalItems = await db.collection("books").countDocuments();
+    const totalPages = Math.ceil(totalItems / limitNumber);
+
+    const books = await db.collection("books")
+      .find()
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber)
+      .toArray();
+const booksWithDetails = books.map(book => ({
+  title: book.title,
+  author: book.author,
+  description: book.description,
+  imageUrl: book.imageUrl || 'https://example.com/placeholder.jpg',
+  notes: book.notes || [],
+}));
+    res.status(200).json({
+      success: true,
+      data: booksWithDetails,
+      metadata: {
+        totalItems,
+        totalPages,
+        currentPage: pageNumber
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching books:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while fetching books'
     });
   }
 });
