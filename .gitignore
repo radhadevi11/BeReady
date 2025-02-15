@@ -38,3 +38,4 @@ logs/
 ehthumbs.db
 Thumbs.db
 .hai/
+node_modules
