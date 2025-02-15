@@ -101,7 +101,10 @@ const AddBookForm = () => {
     };
 
     const isFormValid = () => {
-        return formData.title && formData.description && formData.author && Object.keys(errors).length === 0;
+        // Only check required fields (title, description, author) and ensure no errors exist
+        return formData.title && formData.description && formData.author && 
+            // Filter errors to only consider non-imageURL errors
+            Object.entries(errors).filter(([field]) => field !== 'imageURL').length === 0;
     };
 
     return (
