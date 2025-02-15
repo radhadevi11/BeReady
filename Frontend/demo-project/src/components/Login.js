@@ -46,7 +46,7 @@ const Login = () => {
         localStorage.setItem('userRole', data.role);
 
         // Redirect based on role
-        if (data.role === 'admin') {
+        if (data.role === 'Admin') {
           window.location.href = '/admin-dashboard';
         } else {
           window.location.href = '/user-dashboard';

@@ -41,6 +41,29 @@ const validateRegistration = [
 ];
 
 // Login validation middleware
+// Book validation middleware
+const validateBook = [
+  body('title')
+    .trim()
+    .notEmpty().withMessage('Title is required')
+    .isLength({ min: 3 }).withMessage('Title must be at least 3 characters long'),
+  
+  body('description')
+    .trim()
+    .notEmpty().withMessage('Description is required')
+    .isLength({ min: 20 }).withMessage('Description must be at least 20 characters long'),
+  
+  body('author')
+    .trim()
+    .notEmpty().withMessage('Author is required')
+    .matches(/^[A-Za-z\s]+$/).withMessage('Author name must contain only alphabetical characters and spaces'),
+  
+  body('imageUrl')
+    .optional()
+    .trim()
+    .isURL().withMessage('Image URL must be a valid URL')
+];
+
 const validateLogin = [
   body('name')
     .trim()
@@ -70,6 +93,7 @@ app.post('/login', validateLogin, async (req, res) => {
     // Find user in database
     const db = client.db("BeReadyUsers");
     const user = await db.collection("users").findOne({ name });
+    const booka = await db.collection("books").findOne({ name });
     
     if (!user) {
       return res.status(401).json({
@@ -229,6 +253,48 @@ async function startServer() {
 }
 
 startServer().catch(console.dir);
+
+// Add book endpoint
+app.post('/api/books', validateBook, async (req, res) => {
+  try {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        success: false,
+        errors: errors.array().map(err => ({
+          field: err.path,
+          message: err.msg
+        }))
+      });
+    }
+
+    const { title, description, author, imageUrl } = req.body;
+
+    // Save book to database
+    const db = client.db("BeReadyUsers");
+    const result = await db.collection("books").insertOne({
+      title,
+      description,
+      author,
+      imageUrl,
+      createdAt: new Date()
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Book "${title}" added successfully`,
+      bookId: result.insertedId
+    });
+
+  } catch (error) {
+    console.error('Add book error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'An error occurred while adding the book'
+    });
+  }
+});
 
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
